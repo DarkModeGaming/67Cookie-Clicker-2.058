@@ -190,6 +190,8 @@ h1 {
 
 .scenery {
   height: 155px;
+  min-height: 100px;
+  box-sizing: border-box;
   flex-shrink: 0;
   background:
     linear-gradient(180deg, transparent 30%, #274d52 80%),
@@ -198,21 +200,25 @@ h1 {
     linear-gradient(195deg, transparent 35%, #405c77 36% 51%, transparent 52%),
     linear-gradient(#6da9d0, #d3b5a0 68%, #365b4c);
   border-bottom: 10px solid #633719;
-}
 
 .playarea {
   flex: 1;
   min-height: 300px;
   margin: 0;
-  background-color: #07334a;
-  background-image:
-    linear-gradient(45deg, #ffffff06 25%, transparent 25%, transparent 75%, #ffffff06 75%),
-    linear-gradient(45deg, #ffffff06 25%, transparent 25%, transparent 75%, #ffffff06 75%),
-    linear-gradient(#0b3d54, #062b3d);
-  background-position: 0 0, 20px 20px, 0 0;
-  background-size: 40px 40px, 40px 40px, auto;
-}
 
+  background:
+    linear-gradient(to bottom, #9bd4ef 0%, #b9d8db 35%, transparent 36%),
+    repeating-linear-gradient(
+      0deg,
+      #6e482d 0px,
+      #6e482d 28px,
+      #58351f 29px,
+      #58351f 33px
+    );
+
+  border: 7px solid #784522;
+  box-shadow: inset 0 0 18px #24150d;
+}
 .centerInfo {
   margin: 12px;
   padding: 12px;
