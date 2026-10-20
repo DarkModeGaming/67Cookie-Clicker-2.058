@@ -578,6 +578,16 @@ function buildingAction(i) {
 
 document.getElementById("cookie").onclick = () => {
   cookies += power;
+
+  const pop = document.createElement("span");
+  pop.className = "cookie-pop";
+  pop.textContent = "+" + power;
+
+  const cookie = document.getElementById("cookie");
+  cookie.appendChild(pop);
+
+  setTimeout(() => pop.remove(), 900);
+
   update();
 };
 
