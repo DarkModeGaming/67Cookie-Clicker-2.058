@@ -6,65 +6,197 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cookie Clicker</title>
 <style>
+* { box-sizing: border-box; }
 body {
-  margin: 0; min-height: 100vh; text-align: center;
-  font-family: Arial, sans-serif; color: #fff1d0;
+  margin: 0; padding: 20px;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: #fff1d0;
+  text-align: center;
   background: radial-gradient(circle, #70452a, #24150d);
-  padding: 20px; box-sizing: border-box;
 }
-h1 { color: #ffd580; }
-#count { font-size: 30px; font-weight: bold; margin: 20px; }
+h1 { color: #ffd580; font-size: 38px; margin: 12px 0; }
+#cpsTop { font-size: 19px; color: #baffb0; margin: 8px; }
+#count { font-size: 32px; font-weight: bold; margin: 22px; }
 #cookie {
-  font-size: 145px; cursor: pointer; border: none;
+  font-size: 150px; cursor: pointer; border: none;
   background: transparent; transition: transform .1s;
+  filter: drop-shadow(0 5px 8px #160b06);
 }
 #cookie:active { transform: scale(.88); }
-button {
-  cursor: pointer; border: none; border-radius: 12px;
-  padding: 13px; margin: 7px; font-size: 16px;
-}
-.shop button { background: #ffe0a1; color: #40210e; }
+#cookie:hover { transform: scale(1.04); }
 #message { min-height: 24px; color: #ffd580; }
+.stats { margin: 15px; font-size: 17px; }
+h2 { color: #ffd580; margin-top: 25px; }
+#shop {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; max-width: 1100px; margin: 20px auto;
+}
+.building {
+  display: flex; align-items: center; gap: 10px;
+  text-align: left; width: 100%; min-height: 100px;
+  padding: 12px; border-radius: 12px;
+  border: 2px solid #9b6a42;
+  background: #392317; color: #fff1d0;
+  cursor: pointer; font-size: 14px;
+}
+.building:hover:not(:disabled) {
+  background: #56351f; border-color: #ffd580;
+}
+.building:disabled { opacity: .55; cursor: not-allowed; }
+.building .emoji { font-size: 34px; }
+.building .info { flex: 1; }
+.building .name { font-size: 16px; font-weight: bold; color: #ffd580; }
+.building .cost { margin-top: 6px; }
+.building .owned { margin-top: 4px; color: #baffb0; }
+#upgrade {
+  background: #ffe0a1; color: #40210e;
+  border: 0; border-radius: 12px; padding: 13px 18px;
+  font-size: 16px; cursor: pointer; margin: 10px;
+}
+#upgrade:disabled { opacity: .5; cursor: not-allowed; }
+.small { color: #e5c9a5; font-size: 13px; }
+@media (max-width: 500px) {
+  body { padding: 10px; }
+  h1 { font-size: 29px; }
+  #cookie { font-size: 125px; }
+  #shop { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
+
 <h1>🍪 Cookie Clicker</h1>
+<div id="cpsTop">🍪 Earning 0 cookies per second</div>
 <div id="count">Cookies: 0</div>
+
 <button id="cookie" aria-label="Click the cookie">🍪</button>
 <p>Click the cookie to earn cookies!</p>
 
-<h2>🛒 Cookie Shop</h2>
-<div class="shop">
-  <button id="buyClick">🖱️ Stronger Click<br>
-    Cost: <span id="clickCost">25</span><br>+1 per click</button>
-  <button id="buyGrandma">👵 Cookie Grandma<br>
-    Cost: <span id="grandmaCost">100</span><br>+1 per second</button>
-  <button id="buyFarm">🌾 Cookie Farm<br>
-    Cost: <span id="farmCost">500</span><br>+5 per second</button>
+<div class="stats">
+  Per click: <b id="power">1</b>
+  <br><br>
+  Buildings owned: <b id="totalBuildings">0</b>
 </div>
 
-<p>Per click: <b id="power">1</b></p>
-<p>Per second: <b id="cps">0</b></p>
+<button id="upgrade">
+  🖱️ Stronger Click — Cost: <span id="upgradeCost">25</span>
+</button>
+<p class="small">Each upgrade adds 1 cookie per click.</p>
+
+<h2>🛒 Cookie Shop</h2>
+<p class="small">Buy buildings to make cookies automatically!</p>
+<div id="shop"></div>
 <p id="message">Let's bake!</p>
-<button id="save">💾 Save Game</button>
-<button id="reset">🔄 Reset Game</button>
 
 <script>
-let cookies = 0, power = 1, cps = 0;
-let clickCost = 25, grandmaCost = 100, farmCost = 500;
+const buildings = [
+  {name:"Cursor", emoji:"🖱️", base:15, cps:0.1},
+  {name:"Grandma", emoji:"👵", base:100, cps:1},
+  {name:"Farm", emoji:"🌾", base:1100, cps:8},
+  {name:"Mine", emoji:"⛏️", base:12000, cps:47},
+  {name:"Factory", emoji:"🏭", base:130000, cps:260},
+  {name:"Bank", emoji:"🏦", base:1400000, cps:1400},
+  {name:"Temple", emoji:"🛕", base:20000000, cps:7800},
+  {name:"Wizard Tower", emoji:"🧙", base:330000000, cps:44000},
+  {name:"Shipment", emoji:"🚀", base:5100000000, cps:260000},
+  {name:"Alchemy Lab", emoji:"⚗️", base:75000000000, cps:1600000},
+  {name:"Portal", emoji:"🌀", base:1000000000000, cps:10000000},
+  {name:"Time Machine", emoji:"⏰", base:14000000000000, cps:65000000},
+  {name:"Antimatter Condenser", emoji:"⚛️", base:170000000000000, cps:430000000},
+  {name:"Prism", emoji:"💎", base:2100000000000000, cps:2900000000},
+  {name:"Chancemaker", emoji:"🎰", base:26000000000000000, cps:21000000000},
+  {name:"Fractal Engine", emoji:"🔷", base:310000000000000000, cps:150000000000},
+  {name:"Javascript Console", emoji:"💻", base:71000000000000000000, cps:1100000000000},
+  {name:"Idleverse", emoji:"🌌", base:12000000000000000000000, cps:8300000000000},
+  {name:"Cortex Baker", emoji:"🧠", base:1900000000000000000000000, cps:64000000000000},
+  {name:"You", emoji:"🧑‍🍳", base:540000000000000000000000000, cps:510000000000000}
+];
 
-function update() {
-  document.getElementById("count").textContent =
-    "Cookies: " + Math.floor(cookies).toLocaleString();
-  document.getElementById("power").textContent = power;
-  document.getElementById("cps").textContent = cps;
-  document.getElementById("clickCost").textContent = clickCost;
-  document.getElementById("grandmaCost").textContent = grandmaCost;
-  document.getElementById("farmCost").textContent = farmCost;
+let cookies = 0;
+let power = 1;
+let upgradeCost = 25;
+let owned = buildings.map(() => 0);
+let lastTime = Date.now();
+
+function format(n) {
+  if (!Number.isFinite(n)) return "A lot!";
+  if (n < 1000) return Number(n.toFixed(1)).toLocaleString();
+  const units = [
+    "", " thousand", " million", " billion", " trillion",
+    " quadrillion", " quintillion", " sextillion", " septillion",
+    " octillion", " nonillion", " decillion"
+  ];
+  const tier = Math.floor(Math.log10(n) / 3);
+  if (tier >= units.length) return n.toExponential(2);
+  return (n / Math.pow(1000, tier)).toFixed(2) + units[tier];
+}
+
+function buildingCost(i) {
+  return buildings[i].base * Math.pow(1.15, owned[i]);
+}
+
+function getCps() {
+  return buildings.reduce((sum, b, i) => sum + b.cps * owned[i], 0);
 }
 
 function say(text) {
   document.getElementById("message").textContent = text;
+}
+
+function makeShop() {
+  const shop = document.getElementById("shop");
+  shop.innerHTML = "";
+
+  buildings.forEach((b, i) => {
+    const button = document.createElement("button");
+    button.className = "building";
+    button.id = "building" + i;
+    button.innerHTML = `
+      <span class="emoji">${b.emoji}</span>
+      <span class="info">
+        <span class="name">${b.name}</span><br>
+        <span class="cost">Cost: <span id="cost${i}"></span></span><br>
+        <span class="owned">Owned: <span id="owned${i}">0</span></span><br>
+        <span class="small">+${format(b.cps)} cookies/sec each</span>
+      </span>`;
+    button.onclick = () => buyBuilding(i);
+    shop.appendChild(button);
+  });
+}
+
+function update() {
+  const cps = getCps();
+
+  document.getElementById("count").textContent =
+    "Cookies: " + format(Math.floor(cookies));
+  document.getElementById("cpsTop").textContent =
+    "🍪 Earning " + format(cps) + " cookies per second";
+  document.getElementById("power").textContent = format(power);
+  document.getElementById("totalBuildings").textContent =
+    owned.reduce((a, b) => a + b, 0);
+  document.getElementById("upgradeCost").textContent = format(upgradeCost);
+  document.getElementById("upgrade").disabled = cookies < upgradeCost;
+
+  buildings.forEach((b, i) => {
+    document.getElementById("cost" + i).textContent =
+      format(Math.ceil(buildingCost(i)));
+    document.getElementById("owned" + i).textContent = owned[i];
+    document.getElementById("building" + i).disabled =
+      cookies < buildingCost(i);
+  });
+}
+
+function buyBuilding(i) {
+  const cost = buildingCost(i);
+  if (cookies < cost) return say("You need more cookies!");
+
+  cookies -= cost;
+  owned[i]++;
+  say("You bought a " + buildings[i].name + "!");
+  update();
+  saveGame();
 }
 
 document.getElementById("cookie").onclick = () => {
@@ -72,81 +204,54 @@ document.getElementById("cookie").onclick = () => {
   update();
 };
 
-document.getElementById("buyClick").onclick = () => {
-  if (cookies < clickCost) return say("You need more cookies!");
-  cookies -= clickCost;
+document.getElementById("upgrade").onclick = () => {
+  if (cookies < upgradeCost) return say("You need more cookies!");
+  cookies -= upgradeCost;
   power++;
-  clickCost = Math.ceil(clickCost * 1.7);
+  upgradeCost = Math.ceil(upgradeCost * 1.7);
   say("Click power upgraded!");
   update();
   saveGame();
 };
 
-document.getElementById("buyGrandma").onclick = () => {
-  if (cookies < grandmaCost) return say("You need more cookies!");
-  cookies -= grandmaCost;
-  cps++;
-  grandmaCost = Math.ceil(grandmaCost * 1.8);
-  say("Grandma is baking!");
-  update();
-  saveGame();
-};
-
-document.getElementById("buyFarm").onclick = () => {
-  if (cookies < farmCost) return say("You need more cookies!");
-  cookies -= farmCost;
-  cps += 5;
-  farmCost = Math.ceil(farmCost * 1.9);
-  say("Farm purchased!");
-  update();
-  saveGame();
-};
-
 function saveGame() {
-  localStorage.setItem("cookie-save", JSON.stringify({
-    cookies, power, cps, clickCost, grandmaCost, farmCost
-  }));
-  say("Game saved!");
+  try {
+    localStorage.setItem("my-cookie-clicker-save", JSON.stringify({
+      cookies, power, upgradeCost, owned
+    }));
+  } catch (e) {}
 }
 
 function loadGame() {
   try {
-    const s = JSON.parse(localStorage.getItem("cookie-save"));
+    const s = JSON.parse(localStorage.getItem("my-cookie-clicker-save"));
     if (s) {
-      cookies = s.cookies ?? 0;
-      power = s.power ?? 1;
-      cps = s.cps ?? 0;
-      clickCost = s.clickCost ?? 25;
-      grandmaCost = s.grandmaCost ?? 100;
-      farmCost = s.farmCost ?? 500;
+      cookies = Math.max(0, Number(s.cookies) || 0);
+      power = Math.max(1, Number(s.power) || 1);
+      upgradeCost = Math.max(25, Number(s.upgradeCost) || 25);
+      if (Array.isArray(s.owned)) {
+        owned = buildings.map((b, i) =>
+          Math.max(0, Math.floor(Number(s.owned[i]) || 0))
+        );
+      }
     }
   } catch (e) {}
-  update();
 }
 
-document.getElementById("save").onclick = saveGame;
-
-document.getElementById("reset").onclick = () => {
-  if (!confirm("Start a new game? Your saved progress will be erased.")) return;
-  cookies = 0; power = 1; cps = 0;
-  clickCost = 25; grandmaCost = 100; farmCost = 500;
-  localStorage.removeItem("cookie-save");
-  update();
-  say("New game started!");
-};
-
-setInterval(() => {
-  cookies += cps;
-  update();
-}, 1000);
-
-setInterval(() => {
-  localStorage.setItem("cookie-save", JSON.stringify({
-    cookies, power, cps, clickCost, grandmaCost, farmCost
-  }));
-}, 10000);
-
+makeShop();
 loadGame();
+update();
+
+setInterval(() => {
+  const now = Date.now();
+  const elapsed = Math.min((now - lastTime) / 1000, 5);
+  lastTime = now;
+  cookies += getCps() * elapsed;
+  update();
+}, 100);
+
+setInterval(saveGame, 5000);
+window.addEventListener("beforeunload", saveGame);
 </script>
 </body>
 </html>
