@@ -1,42 +1,150 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookie Clicker 2.058</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #24150d;
-      color: #fff0cb;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    main { padding: 24px; }
-    h1 { font-size: 2.5rem; }
-    a {
-      display: inline-block;
-      padding: 14px 24px;
-      background: #e6a23c;
-      color: #24150d;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cookie Clicker</title>
+<style>
+body {
+  margin: 0; min-height: 100vh; text-align: center;
+  font-family: Arial, sans-serif; color: #fff1d0;
+  background: radial-gradient(circle, #70452a, #24150d);
+  padding: 20px; box-sizing: border-box;
+}
+h1 { color: #ffd580; }
+#count { font-size: 30px; font-weight: bold; margin: 20px; }
+#cookie {
+  font-size: 145px; cursor: pointer; border: none;
+  background: transparent; transition: transform .1s;
+}
+#cookie:active { transform: scale(.88); }
+button { cursor: pointer; border: none; border-radius: 12px;
+  padding: 13px; margin: 7px; font-size: 16px; }
+.shop button { background: #ffe0a1; color: #40210e; }
+#message { min-height: 24px; color: #ffd580; }
+</style>
 </head>
 <body>
-  <main>
-    <h1>🍪 Cookie Clicker</h1>
-    <p>Version 2.058</p>
-    <p>Click below to open the official game.</p>
-    <a href="https://orteil.dashnet.org/cookieclicker/"
-       target="_blank" rel="noopener">
-      Play Cookie Clicker
-    </a>
-  </main>
+<h1>🍪 Cookie Clicker</h1>
+<div id="count">Cookies: 0</div>
+<button id="cookie" aria-label="Click the cookie">🍪</button>
+<p>Click the cookie to earn cookies!</p>
+
+<h2>🛒 Cookie Shop</h2>
+<div class="shop">
+  <button id="buyClick">🖱️ Stronger Click<br>
+    Cost: <span id="clickCost">25</span><br>+1 per click</button>
+  <button id="buyGrandma">👵 Cookie Grandma<br>
+    Cost: <span id="grandmaCost">100</span><br>+1 per second</button>
+  <button id="buyFarm">🌾 Cookie Farm<br>
+    Cost: <span id="farmCost">500</span><br>+5 per second</button>
+</div>
+
+<p>Per click: <b id="power">1</b></p>
+<p>Per second: <b id="cps">0</b></p>
+<p id="message">Let's bake!</p>
+<button id="save">💾 Save Game</button>
+<button id="reset">🔄 Reset Game</button>
+
+<script>
+let cookies = 0, power = 1, cps = 0;
+let clickCost = 25, grandmaCost = 100, farmCost = 500;
+
+function update() {
+  document.getElementById("count").textContent =
+    "Cookies: " + Math.floor(cookies).toLocaleString();
+  document.getElementById("power").textContent = power;
+  document.getElementById("cps").textContent = cps;
+  document.getElementById("clickCost").textContent = clickCost;
+  document.getElementById("grandmaCost").textContent = grandmaCost;
+  document.getElementById("farmCost").textContent = farmCost;
+}
+
+function say(text) {
+  document.getElementById("message").textContent = text;
+}
+
+document.getElementById("cookie").onclick = () => {
+  cookies += power;
+  update();
+};
+
+document.getElementById("buyClick").onclick = () => {
+  if (cookies < clickCost) return say("You need more cookies!");
+  cookies -= clickCost;
+  power++;
+  clickCost = Math.ceil(clickCost * 1.7);
+  say("Click power upgraded!");
+  update();
+  saveGame();
+};
+
+document.getElementById("buyGrandma").onclick = () => {
+  if (cookies < grandmaCost) return say("You need more cookies!");
+  cookies -= grandmaCost;
+  cps++;
+  grandmaCost = Math.ceil(grandmaCost * 1.8);
+  say("Grandma is baking!");
+  update();
+  saveGame();
+};
+
+document.getElementById("buyFarm").onclick = () => {
+  if (cookies < farmCost) return say("You need more cookies!");
+  cookies -= farmCost;
+  cps += 5;
+  farmCost = Math.ceil(farmCost * 1.9);
+  say("Farm purchased!");
+  update();
+  saveGame();
+};
+
+function saveGame() {
+  localStorage.setItem("cookie-save", JSON.stringify({
+    cookies, power, cps, clickCost, grandmaCost, farmCost
+  }));
+  say("Game saved!");
+}
+
+function loadGame() {
+  try {
+    const s = JSON.parse(localStorage.getItem("cookie-save"));
+    if (s) {
+      cookies = s.cookies ?? 0;
+      power = s.power ?? 1;
+      cps = s.cps ?? 0;
+      clickCost = s.clickCost ?? 25;
+      grandmaCost = s.grandmaCost ?? 100;
+      farmCost = s.farmCost ?? 500;
+    }
+  } catch (e) {}
+  update();
+}
+
+document.getElementById("save").onclick = saveGame;
+
+document.getElementById("reset").onclick = () => {
+  if (!confirm("Start a new game? Your saved progress will be erased.")) return;
+  cookies = 0; power = 1; cps = 0;
+  clickCost = 25; grandmaCost = 100; farmCost = 500;
+  localStorage.removeItem("cookie-save");
+  update();
+  say("New game started!");
+};
+
+setInterval(() => {
+  cookies += cps;
+  update();
+}, 1000);
+
+setInterval(() => {
+  localStorage.setItem("cookie-save", JSON.stringify({
+    cookies, power, cps, clickCost, grandmaCost, farmCost
+  }));
+}, 10000);
+
+loadGame();
+</script>
 </body>
 </html>
