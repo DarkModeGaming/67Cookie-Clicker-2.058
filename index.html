@@ -5,136 +5,466 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cookie Clicker</title>
+
 <style>
 * { box-sizing: border-box; }
+
+:root {
+  --gold: #ffd477;
+  --wood: #643719;
+  --dark: #101b27;
+  --panel: #102b3d;
+}
+
 body {
-  margin: 0; padding: 20px;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  color: #fff1d0;
-  text-align: center;
-  background: radial-gradient(circle, #70452a, #24150d);
+  margin: 0;
+  color: #fff0d4;
+  font-family: Georgia, "Trebuchet MS", serif;
+  background: #101b27;
 }
-h1 { color: #ffd580; font-size: 38px; margin: 12px 0; }
-#cpsTop { font-size: 19px; color: #baffb0; margin: 8px; }
-#count { font-size: 32px; font-weight: bold; margin: 22px; }
-#cookie {
-  font-size: 150px; cursor: pointer; border: none;
-  background: transparent; transition: transform .1s;
-  filter: drop-shadow(0 5px 8px #160b06);
-}
-#cookie:active { transform: scale(.88); }
-#cookie:hover { transform: scale(1.04); }
-#message { min-height: 24px; color: #ffd580; }
-.stats { margin: 15px; font-size: 17px; }
-h2 { color: #ffd580; margin-top: 25px; }
-#shop {
+
+button { font-family: inherit; }
+
+.game {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px; max-width: 1100px; margin: 20px auto;
+  grid-template-columns: 28% 1fr 24%;
+  min-height: 100vh;
+  gap: 0;
 }
-.building {
-  display: flex; align-items: center; gap: 10px;
-  text-align: left; width: 100%; min-height: 100px;
-  padding: 12px; border-radius: 12px;
-  border: 2px solid #9b6a42;
-  background: #392317; color: #fff1d0;
-  cursor: pointer; font-size: 14px;
+
+/* LEFT COOKIE AREA */
+.left {
+  position: relative;
+  padding: 12px;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%, #e9a04b 0%, transparent 24%),
+    linear-gradient(180deg, #173e5d, #304e71 35%, #182e3f 70%, #081522);
+  border-right: 8px solid #75431f;
 }
-.building:hover:not(:disabled) {
-  background: #56351f; border-color: #ffd580;
+
+.left:before {
+  content: " ";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .65;
+  background:
+    radial-gradient(ellipse at 15% 30%, #f5d4b3 0 2%, transparent 16%),
+    radial-gradient(ellipse at 80% 40%, #f4c5a0 0 2%, transparent 18%),
+    linear-gradient(165deg, transparent 50%, #101d32 50%),
+    linear-gradient(195deg, transparent 52%, #203c53 52%);
 }
-.building:disabled { opacity: .55; cursor: not-allowed; }
-.building .emoji { font-size: 34px; }
-.building .info { flex: 1; }
-.building .name { font-size: 16px; font-weight: bold; color: #ffd580; }
-.building .cost { margin-top: 6px; }
-.building .owned { margin-top: 4px; color: #baffb0; }
+
+.left > * { position: relative; }
+
+.brand {
+  background: linear-gradient(#704323, #29170d);
+  border: 4px solid #a16b32;
+  border-radius: 12px;
+  box-shadow: 0 5px 12px #0009;
+  padding: 10px 5px;
+}
+
+h1 {
+  margin: 0;
+  color: var(--gold);
+  font-size: clamp(22px, 2.2vw, 36px);
+  text-shadow: 2px 3px #341b0c;
+}
+
+#cpsTop {
+  color: #b9ffad;
+  font-size: 15px;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+#count {
+  margin: 18px 0 5px;
+  font-size: clamp(24px, 2.5vw, 38px);
+  font-weight: bold;
+  text-shadow: 2px 3px #38200e;
+}
+
+#cookie {
+  display: block;
+  margin: 18px auto;
+  width: clamp(170px, 18vw, 285px);
+  height: clamp(170px, 18vw, 285px);
+  border-radius: 50%;
+  border: 7px solid #9b5a24;
+  background:
+    radial-gradient(circle at 30% 24%, #fff0b1, transparent 23%),
+    radial-gradient(circle at 65% 70%, #7b3718, transparent 40%),
+    radial-gradient(circle at 50% 40%, #d99a45, #9e551e 72%, #633012);
+  box-shadow:
+    0 0 0 5px #42200d,
+    0 0 30px #ffd16d,
+    inset 0 0 20px #4a210b;
+  cursor: pointer;
+  font-size: clamp(100px, 12vw, 190px);
+  line-height: 1;
+  transition: transform .08s;
+}
+
+#cookie:hover { transform: scale(1.035); }
+#cookie:active { transform: scale(.93); }
+
+.hint {
+  font-size: 15px;
+  font-weight: bold;
+  text-shadow: 1px 2px #000;
+}
+
+.stats {
+  text-align: left;
+  background: #071522e8;
+  border: 3px solid #81512b;
+  border-radius: 9px;
+  padding: 12px;
+  margin: 15px 0;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
 #upgrade {
-  background: #ffe0a1; color: #40210e;
-  border: 0; border-radius: 12px; padding: 13px 18px;
-  font-size: 16px; cursor: pointer; margin: 10px;
+  width: 90%;
+  padding: 14px 8px;
+  border: 4px solid #a8753b;
+  border-radius: 9px;
+  color: #fff0d4;
+  background: linear-gradient(#9a612c, #4c2b16);
+  box-shadow: inset 0 0 8px #e7b66a55, 0 4px 8px #0008;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: bold;
 }
+
 #upgrade:disabled { opacity: .5; cursor: not-allowed; }
-.small { color: #e5c9a5; font-size: 13px; }
-@media (max-width: 500px) {
-  body { padding: 10px; }
-  h1 { font-size: 29px; }
-  #cookie { font-size: 125px; }
+
+/* CENTER AREA */
+.center {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 8px solid #75431f;
+  background: #07334a;
+}
+
+.woodbar {
+  background: linear-gradient(#8e592e, #3b2111 45%, #75451f);
+  border-top: 4px solid #b17b45;
+  border-bottom: 5px solid #29170c;
+  padding: 12px;
+  box-shadow: 0 4px 7px #0008;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.topbar button, .tabbutton {
+  color: #ffe0a0;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 3px solid #a77543;
+  border-radius: 8px;
+  background: linear-gradient(#704323, #28170e);
+  cursor: pointer;
+}
+
+#message {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 120px;
+}
+
+.scenery {
+  height: 155px;
+  flex-shrink: 0;
+  background:
+    linear-gradient(180deg, transparent 30%, #274d52 80%),
+    radial-gradient(ellipse at 50% 110%, #90a766 0 16%, transparent 17%),
+    linear-gradient(170deg, transparent 38%, #536f76 39% 48%, transparent 49%),
+    linear-gradient(195deg, transparent 35%, #405c77 36% 51%, transparent 52%),
+    linear-gradient(#6da9d0, #d3b5a0 68%, #365b4c);
+  border-bottom: 10px solid #633719;
+}
+
+.playarea {
+  flex: 1;
+  min-height: 300px;
+  margin: 0;
+  background-color: #07334a;
+  background-image:
+    linear-gradient(45deg, #ffffff06 25%, transparent 25%, transparent 75%, #ffffff06 75%),
+    linear-gradient(45deg, #ffffff06 25%, transparent 25%, transparent 75%, #ffffff06 75%),
+    linear-gradient(#0b3d54, #062b3d);
+  background-position: 0 0, 20px 20px, 0 0;
+  background-size: 40px 40px, 40px 40px, auto;
+}
+
+.centerInfo {
+  margin: 12px;
+  padding: 12px;
+  border: 2px solid #86532b;
+  background: #061a29cc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* RIGHT STORE */
+.right {
+  min-width: 0;
+  background: linear-gradient(90deg, #29170d, #563018 15%, #25150d);
+}
+
+.storeTitle {
+  text-align: center;
+  padding: 12px 4px;
+  margin: 0;
+  color: var(--gold);
+  font-size: 30px;
+  background: linear-gradient(#704323, #29170d);
+  border-bottom: 6px solid #a06a39;
+  text-shadow: 2px 2px #000;
+}
+
+.storeControls {
+  display: flex;
+  justify-content: space-around;
+  padding: 9px 2px;
+  background: #171311;
+  border-bottom: 3px solid #79502c;
+}
+
+.storeControls button {
+  color: #eee;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.storeControls button.active { color: var(--gold); }
+
+#shop {
+  padding: 3px 6px 12px;
+}
+
+.building {
+  display: grid;
+  grid-template-columns: 22px 35px minmax(0, 1fr) auto;
+  gap: 5px;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  text-align: left;
+  padding: 5px 3px;
+  color: #f7ead8;
+  border: 0;
+  border-bottom: 1px solid #9b744855;
+  background: linear-gradient(90deg, #18242b, #10191e);
+  cursor: pointer;
+}
+
+.building:hover:not(:disabled) {
+  background: linear-gradient(90deg, #4e3924, #243b44);
+}
+
+.building:disabled {
+  opacity: .53;
+  cursor: not-allowed;
+}
+
+.number {
+  text-align: center;
+  font-size: 13px;
+  color: #d7b88a;
+}
+
+.icon {
+  text-align: center;
+  font-size: 26px;
+}
+
+.details { min-width: 0; }
+
+.bname {
+  font-size: 13px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.cost {
+  color: #ffd05a;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.production {
+  color: #a8dca0;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.owned {
+  color: #ddd;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#notice {
+  text-align: center;
+  min-height: 25px;
+  padding: 7px;
+  color: #ffda83;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .game { grid-template-columns: 1fr; }
+  .left { border-right: 0; border-bottom: 8px solid #75431f; }
+  .center { border-right: 0; border-bottom: 8px solid #75431f; }
+  .scenery { height: 100px; }
+  .playarea { min-height: 160px; }
+  #cookie { width: 190px; height: 190px; font-size: 125px; }
+  #shop { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
   #shop { grid-template-columns: 1fr; }
 }
 </style>
 </head>
+
 <body>
+<div class="game">
 
-<h1>🍪 Cookie Clicker</h1>
-<div id="cpsTop">🍪 Earning 0 cookies per second</div>
-<div id="count">Cookies: 0</div>
+  <section class="left">
+    <div class="brand">
+      <h1>🍪 Cookie Clicker</h1>
+      <div id="cpsTop">🍪 Earning 0 cookies per second</div>
+    </div>
 
-<button id="cookie" aria-label="Click the cookie">🍪</button>
-<p>Click the cookie to earn cookies!</p>
+    <div id="count">Cookies: 0</div>
 
-<div class="stats">
-  Per click: <b id="power">1</b>
-  <br><br>
-  Buildings owned: <b id="totalBuildings">0</b>
+    <button id="cookie" aria-label="Click to make cookies">🍪</button>
+    <p class="hint">Click the cookie to earn cookies!</p>
+
+    <div class="stats">
+      🖱️ Per click: <b id="power">1</b><br>
+      🍪 Cookies per second: <b id="cps">0</b><br>
+      🏭 Buildings owned: <b id="totalBuildings">0</b>
+    </div>
+
+    <button id="upgrade">
+      🖱️ Stronger Click<br>
+      Cost: <span id="upgradeCost">25</span>
+    </button>
+    <p class="hint">Each upgrade adds 1 cookie per click.</p>
+  </section>
+
+  <section class="center">
+    <div class="woodbar topbar">
+      <button id="optionsButton">⚙ Options</button>
+      <div id="message">Small clicks... big dreams! 🍪</div>
+      <button id="statsButton">▥ Stats</button>
+    </div>
+
+    <div class="scenery"></div>
+
+    <div class="woodbar">
+      <div style="text-align:center;font-weight:bold;color:#ffdc9b">
+        🏔️ Your Cookie Kingdom 🏔️
+      </div>
+    </div>
+
+    <div class="playarea" id="playarea"></div>
+
+    <div class="centerInfo" id="centerInfo">
+      Welcome to your bakery! Buy buildings from the Store to make cookies automatically.
+    </div>
+  </section>
+
+  <section class="right">
+    <h2 class="storeTitle">Store</h2>
+    <div class="storeControls">
+      <button id="buyMode" class="active">Buy</button>
+      <button id="sellMode">Sell</button>
+      <button id="buy1" class="active">1</button>
+      <button id="buy10">10</button>
+      <button id="buy100">100</button>
+    </div>
+    <div id="shop"></div>
+    <div id="notice">Happy baking! 🍪</div>
+  </section>
+
 </div>
-
-<button id="upgrade">
-  🖱️ Stronger Click — Cost: <span id="upgradeCost">25</span>
-</button>
-<p class="small">Each upgrade adds 1 cookie per click.</p>
-
-<h2>🛒 Cookie Shop</h2>
-<p class="small">Buy buildings to make cookies automatically!</p>
-<div id="shop"></div>
-<p id="message">Let's bake!</p>
 
 <script>
 const buildings = [
-  {name:"Cursor", emoji:"🖱️", base:15, cps:0.1},
-  {name:"Grandma", emoji:"👵", base:100, cps:1},
-  {name:"Farm", emoji:"🌾", base:1100, cps:8},
-  {name:"Mine", emoji:"⛏️", base:12000, cps:47},
-  {name:"Factory", emoji:"🏭", base:130000, cps:260},
-  {name:"Bank", emoji:"🏦", base:1400000, cps:1400},
-  {name:"Temple", emoji:"🛕", base:20000000, cps:7800},
-  {name:"Wizard Tower", emoji:"🧙", base:330000000, cps:44000},
-  {name:"Shipment", emoji:"🚀", base:5100000000, cps:260000},
-  {name:"Alchemy Lab", emoji:"⚗️", base:75000000000, cps:1600000},
-  {name:"Portal", emoji:"🌀", base:1000000000000, cps:10000000},
-  {name:"Time Machine", emoji:"⏰", base:14000000000000, cps:65000000},
-  {name:"Antimatter Condenser", emoji:"⚛️", base:170000000000000, cps:430000000},
-  {name:"Prism", emoji:"💎", base:2100000000000000, cps:2900000000},
-  {name:"Chancemaker", emoji:"🎰", base:26000000000000000, cps:21000000000},
-  {name:"Fractal Engine", emoji:"🔷", base:310000000000000000, cps:150000000000},
-  {name:"Javascript Console", emoji:"💻", base:71000000000000000000, cps:1100000000000},
-  {name:"Idleverse", emoji:"🌌", base:12000000000000000000000, cps:8300000000000},
-  {name:"Cortex Baker", emoji:"🧠", base:1900000000000000000000000, cps:64000000000000},
-  {name:"You", emoji:"🧑‍🍳", base:540000000000000000000000000, cps:510000000000000}
+  {name:"Cursor", icon:"🖱️", base:15, cps:0.1},
+  {name:"Grandma", icon:"👵", base:100, cps:1},
+  {name:"Farm", icon:"🌾", base:1100, cps:8},
+  {name:"Mine", icon:"⛏️", base:12000, cps:47},
+  {name:"Factory", icon:"🏭", base:130000, cps:260},
+  {name:"Bank", icon:"🏦", base:1400000, cps:1400},
+  {name:"Temple", icon:"🏛️", base:20000000, cps:7800},
+  {name:"Wizard Tower", icon:"🧙", base:330000000, cps:44000},
+  {name:"Shipment", icon:"🚀", base:5100000000, cps:260000},
+  {name:"Alchemy Lab", icon:"⚗️", base:75000000000, cps:1600000},
+  {name:"Portal", icon:"🌀", base:1000000000000, cps:10000000},
+  {name:"Time Machine", icon:"⏰", base:14000000000000, cps:65000000},
+  {name:"Antimatter Condenser", icon:"⚛️", base:170000000000000, cps:430000000},
+  {name:"Prism", icon:"💎", base:2100000000000000, cps:2900000000},
+  {name:"Chancemaker", icon:"🎰", base:26000000000000000, cps:21000000000},
+  {name:"Fractal Engine", icon:"🔷", base:310000000000000000, cps:150000000000},
+  {name:"Javascript Console", icon:"💻", base:71000000000000000000, cps:1100000000000},
+  {name:"Idleverse", icon:"🌌", base:12000000000000000000000, cps:8300000000000},
+  {name:"Cortex Baker", icon:"🧠", base:1900000000000000000000000, cps:64000000000000},
+  {name:"You", icon:"🧑‍🍳", base:540000000000000000000000000, cps:510000000000000}
 ];
 
 let cookies = 0;
 let power = 1;
 let upgradeCost = 25;
 let owned = buildings.map(() => 0);
+let buyAmount = 1;
+let selling = false;
 let lastTime = Date.now();
 
-function format(n) {
-  if (!Number.isFinite(n)) return "A lot!";
+function fmt(n) {
+  if (!Number.isFinite(n)) return "Lots!";
   if (n < 1000) return Number(n.toFixed(1)).toLocaleString();
-  const units = [
-    "", " thousand", " million", " billion", " trillion",
+  const names = ["", " thousand", " million", " billion", " trillion",
     " quadrillion", " quintillion", " sextillion", " septillion",
-    " octillion", " nonillion", " decillion"
-  ];
+    " octillion", " nonillion", " decillion"];
   const tier = Math.floor(Math.log10(n) / 3);
-  if (tier >= units.length) return n.toExponential(2);
-  return (n / Math.pow(1000, tier)).toFixed(2) + units[tier];
+  if (tier >= names.length) return n.toExponential(2);
+  return (n / Math.pow(1000, tier)).toFixed(2) + names[tier];
 }
 
-function buildingCost(i) {
-  return buildings[i].base * Math.pow(1.15, owned[i]);
+function costAt(i, amountOwned = owned[i]) {
+  return buildings[i].base * Math.pow(1.15, amountOwned);
+}
+
+function amountCost(i, amount) {
+  let total = 0;
+  for (let j = 0; j < amount; j++) {
+    total += costAt(i, owned[i] + j);
+  }
+  return total;
 }
 
 function getCps() {
@@ -142,7 +472,7 @@ function getCps() {
 }
 
 function say(text) {
-  document.getElementById("message").textContent = text;
+  document.getElementById("notice").textContent = text;
 }
 
 function makeShop() {
@@ -154,14 +484,15 @@ function makeShop() {
     button.className = "building";
     button.id = "building" + i;
     button.innerHTML = `
-      <span class="emoji">${b.emoji}</span>
-      <span class="info">
-        <span class="name">${b.name}</span><br>
-        <span class="cost">Cost: <span id="cost${i}"></span></span><br>
-        <span class="owned">Owned: <span id="owned${i}">0</span></span><br>
-        <span class="small">+${format(b.cps)} cookies/sec each</span>
-      </span>`;
-    button.onclick = () => buyBuilding(i);
+      <span class="number">${i + 1}.</span>
+      <span class="icon">${b.icon}</span>
+      <span class="details">
+        <span class="bname">${b.name}</span>
+        <span class="cost" id="cost${i}"></span><br>
+        <span class="production">+${fmt(b.cps)} / second each</span>
+      </span>
+      <span class="owned" id="owned${i}">x0</span>`;
+    button.onclick = () => buildingAction(i);
     shop.appendChild(button);
   });
 }
@@ -170,31 +501,53 @@ function update() {
   const cps = getCps();
 
   document.getElementById("count").textContent =
-    "Cookies: " + format(Math.floor(cookies));
+    "Cookies: " + fmt(Math.floor(cookies));
   document.getElementById("cpsTop").textContent =
-    "🍪 Earning " + format(cps) + " cookies per second";
-  document.getElementById("power").textContent = format(power);
+    "🍪 Earning " + fmt(cps) + " cookies per second";
+  document.getElementById("cps").textContent = fmt(cps);
+  document.getElementById("power").textContent = fmt(power);
   document.getElementById("totalBuildings").textContent =
     owned.reduce((a, b) => a + b, 0);
-  document.getElementById("upgradeCost").textContent = format(upgradeCost);
-  document.getElementById("upgrade").disabled = cookies < upgradeCost;
+  document.getElementById("upgradeCost").textContent = fmt(upgradeCost);
+  document.getElementById("upgrade").disabled =
+    selling || cookies < upgradeCost;
 
   buildings.forEach((b, i) => {
+    const cost = amountCost(i, buyAmount);
     document.getElementById("cost" + i).textContent =
-      format(Math.ceil(buildingCost(i)));
-    document.getElementById("owned" + i).textContent = owned[i];
-    document.getElementById("building" + i).disabled =
-      cookies < buildingCost(i);
+      "Cost: " + fmt(Math.ceil(selling ? costAt(i) * 0.5 : cost));
+    document.getElementById("owned" + i).textContent = "x" + owned[i];
+
+    document.getElementById("building" + i).disabled = selling
+      ? owned[i] < 1
+      : cookies < cost;
+  });
+
+  document.getElementById("buyMode").classList.toggle("active", !selling);
+  document.getElementById("sellMode").classList.toggle("active", selling);
+  [1, 10, 100].forEach(n => {
+    document.getElementById("buy" + n).classList.toggle("active", buyAmount === n);
   });
 }
 
-function buyBuilding(i) {
-  const cost = buildingCost(i);
-  if (cookies < cost) return say("You need more cookies!");
+function buildingAction(i) {
+  const b = buildings[i];
 
-  cookies -= cost;
-  owned[i]++;
-  say("You bought a " + buildings[i].name + "!");
+  if (selling) {
+    if (owned[i] < 1) return;
+    const quantity = Math.min(buyAmount, owned[i]);
+    const refund = quantity * b.base * 0.5;
+    cookies += refund;
+    owned[i] -= quantity;
+    say("Sold " + quantity + " " + b.name + " building(s).");
+  } else {
+    const cost = amountCost(i, buyAmount);
+    if (cookies < cost) return say("You need more cookies!");
+    cookies -= cost;
+    owned[i] += buyAmount;
+    say("Bought " + buyAmount + " " + b.name + " building(s)!");
+  }
+
   update();
   saveGame();
 }
@@ -214,9 +567,37 @@ document.getElementById("upgrade").onclick = () => {
   saveGame();
 };
 
+document.getElementById("buyMode").onclick = () => {
+  selling = false;
+  update();
+};
+document.getElementById("sellMode").onclick = () => {
+  selling = true;
+  update();
+};
+
+[1, 10, 100].forEach(n => {
+  document.getElementById("buy" + n).onclick = () => {
+    buyAmount = n;
+    update();
+  };
+});
+
+document.getElementById("optionsButton").onclick = () => {
+  document.getElementById("centerInfo").textContent =
+    "Your progress saves automatically in this browser. Keep baking to unlock every building!";
+};
+
+document.getElementById("statsButton").onclick = () => {
+  document.getElementById("centerInfo").textContent =
+    "Cookies: " + fmt(cookies) + " | Cookies per second: " +
+    fmt(getCps()) + " | Total buildings: " +
+    owned.reduce((a, b) => a + b, 0) + " | Cookies per click: " + fmt(power);
+};
+
 function saveGame() {
   try {
-    localStorage.setItem("my-cookie-clicker-save", JSON.stringify({
+    localStorage.setItem("fantasy-cookie-save", JSON.stringify({
       cookies, power, upgradeCost, owned
     }));
   } catch (e) {}
@@ -224,16 +605,15 @@ function saveGame() {
 
 function loadGame() {
   try {
-    const s = JSON.parse(localStorage.getItem("my-cookie-clicker-save"));
-    if (s) {
-      cookies = Math.max(0, Number(s.cookies) || 0);
-      power = Math.max(1, Number(s.power) || 1);
-      upgradeCost = Math.max(25, Number(s.upgradeCost) || 25);
-      if (Array.isArray(s.owned)) {
-        owned = buildings.map((b, i) =>
-          Math.max(0, Math.floor(Number(s.owned[i]) || 0))
-        );
-      }
+    const s = JSON.parse(localStorage.getItem("fantasy-cookie-save"));
+    if (!s) return;
+    cookies = Math.max(0, Number(s.cookies) || 0);
+    power = Math.max(1, Number(s.power) || 1);
+    upgradeCost = Math.max(25, Number(s.upgradeCost) || 25);
+    if (Array.isArray(s.owned)) {
+      owned = buildings.map((b, i) =>
+        Math.max(0, Math.floor(Number(s.owned[i]) || 0))
+      );
     }
   } catch (e) {}
 }
