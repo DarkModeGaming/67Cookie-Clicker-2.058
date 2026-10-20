@@ -369,6 +369,89 @@ h1 {
     transform: translate(-50%, -100px) scale(1.3);
   }
 }
+  
+/* Cookie Kingdom scene backgrounds */
+.playarea {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow-y: auto;
+  background: #3b2418;
+}
+
+.scene {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 190px;
+  padding: 12px 18px;
+  border: 5px solid #704322;
+  border-bottom: 7px solid #4b2b19;
+  box-shadow: inset 0 0 12px #24150d;
+  overflow: hidden;
+}
+
+.scene h3 {
+  margin: 0 0 14px;
+  color: #ffe0a0;
+  font-size: 20px;
+  text-shadow: 2px 2px 3px #25150d;
+}
+
+.bakery-scene {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 28px,
+      #5d3927 29px 33px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #bd8b66 0 24px,
+      #d7b18a 25px 28px
+    );
+}
+
+.farm-scene {
+  background:
+    linear-gradient(
+      to bottom,
+      #8bd0f4 0 32%,
+      #d9edaa 33% 42%,
+      #91bd4c 43% 68%,
+      #638b32 69% 100%
+    );
+}
+
+.mine-scene {
+  background:
+    linear-gradient(
+      to bottom,
+      #9ac7df 0 30%,
+      #80614b 31% 58%,
+      #4b3327 59% 100%
+    );
+}
+
+.scene-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  min-height: 95px;
+  font-size: 34px;
+}
+
+.scene-items span {
+  display: inline-block;
+  animation: kingdomBounce 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes kingdomBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-7px); }
+}
+
 </style>
 </head>
 
