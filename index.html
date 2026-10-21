@@ -892,7 +892,7 @@ document.getElementById("cookie").onclick = () => {
 document.getElementById("upgrade").onclick = () => {
   if (cookies < upgradeCost) return say("You need more cookies!");
   cookies -= upgradeCost;
-  power++;
+  power *= 2;
   upgradeCost = Math.ceil(upgradeCost * 1.7);
   say("Click power upgraded!");
   update();
