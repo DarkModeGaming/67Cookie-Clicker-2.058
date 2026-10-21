@@ -901,16 +901,18 @@ document.getElementById("sellMode").onclick = () => {
   };
 });
 
+
 document.getElementById("optionsButton").onclick = () => {
-  document.getElementById("centerInfo").textContent =
-    "Your progress saves automatically in this browser. Keep baking to unlock every building!";
+  document.getElementById("message").textContent =
+    "⚙ Options: Your progress saves automatically!";
 };
 
 document.getElementById("statsButton").onclick = () => {
-  document.getElementById("centerInfo").textContent =
-    "Cookies: " + fmt(cookies) + " | Cookies per second: " +
-    fmt(getCps()) + " | Total buildings: " +
-    owned.reduce((a, b) => a + b, 0) + " | Cookies per click: " + fmt(power);
+  document.getElementById("message").textContent =
+    "🍪 Cookies: " + fmt(cookies) +
+    " | Per second: " + fmt(getCps()) +
+    " | Buildings: " + owned.reduce((a, b) => a + b, 0) +
+    " | Per click: " + fmt(power);
 };
 
 function saveGame() {
