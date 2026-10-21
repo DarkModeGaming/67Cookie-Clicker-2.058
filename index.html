@@ -800,7 +800,24 @@ function makeShop() {
     shop.appendChild(button);
   });
 }
+function renderBuildingBoxes() {
+  const container = document.getElementById("buildingBoxes");
+  if (!container) return;
+  container.innerHTML = "";
 
+  buildings.forEach((b, i) => {
+    if (owned[i] <= 0) return;
+
+    const box = document.createElement("div");
+    box.className = "building-box";
+    box.innerHTML = `
+      <div class="building-icon">${b.icon}</div>
+      <div>${b.name}</div>
+      <div class="building-count">+${owned[i]}</div>
+    `;
+    container.appendChild(box);
+  });
+}
 function update() {
   const cps = getCps();
 
