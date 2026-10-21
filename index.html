@@ -849,8 +849,9 @@ function update() {
   [1, 10, 100].forEach(n => {
     document.getElementById("buy" + n).classList.toggle("active", buyAmount === n);
   });
-}
 
+  renderBuildingBoxes();
+}
 function buildingAction(i) {
   const b = buildings[i];
 
