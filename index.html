@@ -998,7 +998,8 @@ setInterval(() => {
   const elapsed = Math.min((now - lastTime) / 1000, 5);
   lastTime = now;
   cookies += getCps() * elapsed;
-  update();
+totalEarned += getCps() * elapsed;
+update();
 }, 100);
 
 setInterval(saveGame, 5000);
