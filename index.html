@@ -929,8 +929,31 @@ document.getElementById("sellMode").onclick = () => {
 
 
 document.getElementById("optionsButton").onclick = () => {
-  document.getElementById("message").textContent =
-    "⚙ Options: Your progress saves automatically!";
+  document.getElementById("message").innerHTML = `
+    ⚙ Game Options<br>
+    <button id="saveButton">💾 Save Game</button>
+    <button id="resetButton">🔄 Reset Game</button>
+  `;
+
+  document.getElementById("saveButton").onclick = () => {
+    saveGame();
+    document.getElementById("message").textContent = "💾 Game saved!";
+  };
+
+  document.getElementById("resetButton").onclick = () => {
+    if (!confirm("Reset all your cookie progress?")) return;
+
+    cookies = 0;
+    power = 1;
+    upgradeCost = 25;
+    owned = buildings.map(() => 0);
+    selling = false;
+    buyAmount = 1;
+
+    saveGame();
+    update();
+    document.getElementById("message").textContent = "🔄 Game reset!";
+  };
 };
 
 document.getElementById("statsButton").onclick = () => {
