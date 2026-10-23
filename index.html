@@ -848,8 +848,8 @@ function update() {
 
   buildings.forEach((b, i) => {
     const cost = amountCost(i, buyAmount);
-    document.getElementById("cost" + i).textContent =
-      "Cost: " + fmt(Math.ceil(selling ? costAt(i) * 0.5 : cost));
+   document.getElementById("cost" + i).textContent =
+  "Cost: " + Math.ceil(selling ? costAt(i) * 0.5 : cost).toLocaleString("en-US");
     document.getElementById("owned" + i).textContent = "x" + owned[i];
 
     document.getElementById("building" + i).disabled = selling
